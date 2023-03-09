@@ -622,7 +622,9 @@ namespace SysBot.Pokemon.Discord
             }
 
             List<ulong> channels = new();
+            List<ulong> delaychannels = new();
             List<ITextChannel> embedChannels = new();
+            List<ITextChannel> delayembedChannels = new();
 
             if (!RaidSV.RaidSVEmbedsInitialized)
             {
@@ -654,6 +656,23 @@ namespace SysBot.Pokemon.Discord
                     await ReplyAsync("No matching guild channels found.").ConfigureAwait(false);
                     return;
                 }
+                // Delay Channel Stuff
+                var delaychStrings = RaidSettingsSV.DelayRaidEmbedChannelsSV.Split(',');
+                foreach (var delaychannel in delaychStrings)
+                {
+                    if (ulong.TryParse(delaychannel, out ulong result) && !delaychannels.Contains(result))
+                        delaychannels.Add(result);
+                }
+
+                foreach (var guild in Context.Client.Guilds)
+                {
+                    foreach (var delayid in delaychannels)
+                    {
+                        var delaychannel = guild.Channels.FirstOrDefault(x => x.Id == delayid);
+                        if (delaychannel is not null && delaychannel is ITextChannel ch)
+                            delayembedChannels.Add(ch);
+                    }
+                }
             }
 
             RaidSV.RaidSVEmbedsInitialized ^= true;
@@ -666,10 +685,10 @@ namespace SysBot.Pokemon.Discord
             }
 
             RaidSV.RaidSVEmbedSource = new();
-            _ = Task.Run(async () => await RaidSVEmbedLoop(embedChannels).ConfigureAwait(false));
+            _ = Task.Run(async () => await RaidSVEmbedLoop(embedChannels, delayembedChannels).ConfigureAwait(false));
         }
 
-        private static async Task RaidSVEmbedLoop(List<ITextChannel> channels)
+        private static async Task RaidSVEmbedLoop(List<ITextChannel> channels, List<ITextChannel> delayChannels)
         {
             while (!RaidSV.RaidSVEmbedSource.IsCancellationRequested)
             {
@@ -710,6 +729,22 @@ namespace SysBot.Pokemon.Discord
                                     await channel.SendMessageAsync(null, false, embed: embed.Build()).ConfigureAwait(false);
                                 else
                                     await channel.SendFileAsync(ms, img, "", false, embed: embed.Build()).ConfigureAwait(false);
+                            }
+                            catch { }
+                        }
+                    }
+                    foreach (var delaychannel in delayChannels)
+                    {
+                        if (embedInfo.Item1 != null)
+                        {
+                            await Task.Delay(10_000).ConfigureAwait(false);
+                            MemoryStream? ms = new(embedInfo.Item1);
+                            try
+                            {
+                                if (!RaidSettingsSV.TakeScreenshot)
+                                    await delaychannel.SendMessageAsync(null, false, embed: embed.Build()).ConfigureAwait(false);
+                                else
+                                    await delaychannel.SendFileAsync(ms, img, "", false, embed: embed.Build()).ConfigureAwait(false);
                             }
                             catch { }
                         }
