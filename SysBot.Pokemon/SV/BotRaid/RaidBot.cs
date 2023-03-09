@@ -30,7 +30,7 @@ namespace SysBot.Pokemon
             Settings = hub.Config.RaidSV;
         }
 
-        private const string RaidBotVersion = "Version 0.3.5";
+        private const string RaidBotVersion = "Version B 0.3.5";
         private int RaidsAtStart;
         private int RaidCount;
         private int WinCount;
