@@ -329,7 +329,7 @@ namespace SysBot.Pokemon
             var tradePartner = await GetTradePartnerInfo(token).ConfigureAwait(false);
             var trainerNID = await GetTradePartnerNID(TradePartnerNIDOffset, token).ConfigureAwait(false);
             RecordUtil<PokeTradeBot>.Record($"Initiating\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
-            Log($"Found Link Trade partner: {tradePartner.TrainerName}-{tradePartner.TID7} (ID: {trainerNID})");
+            Log($"Found Link Trade partner: {tradePartner.TrainerName}.{tradePartner.TID7} (ID: {trainerNID})");
 
             var partnerCheck = CheckPartnerReputation(poke, trainerNID, tradePartner.TrainerName);
             if (partnerCheck != PokeTradeResult.Success)
@@ -339,7 +339,7 @@ namespace SysBot.Pokemon
                 return partnerCheck;
             }
 
-            poke.SendNotification(this, $"Found Link Trade partner: {tradePartner.TrainerName}. Waiting for a Pokémon...");
+            poke.SendNotification(this, $"Found Link Trade partner: {tradePartner.TrainerName}.  TID:{tradePartner.TID7} SID:{tradePartner.SID7} Waiting for a Pokémon...");
 
             if (poke.Type == PokeTradeType.Dump)
             {
