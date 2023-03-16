@@ -65,6 +65,9 @@ namespace SysBot.Pokemon
         [Category(Hosting), Description("Enter Discord channel ID(s) to post a 10 second delayed raid embeds to.  Separate channels with a comma.")]
         public string DelayRaidEmbedChannelsSV { get; set; } = string.Empty;
 
+        [Category(Hosting), Description("Enter the amount of time in milliseconds for the delay channel.")]
+        public int DelayChannelTime { get; set; } = 10000;
+
         [Category(FeatureToggle), Description("When enabled, the screen will be turned off during normal bot loop operation to save power.")]
         public bool ScreenOff { get; set; }
 
