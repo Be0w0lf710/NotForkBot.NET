@@ -696,7 +696,8 @@ namespace SysBot.Pokemon.Discord
                 {
                     var img = "zap.jpg";
                     var turl = string.Empty;
-                    var form = string.Empty;                    
+                    var form = string.Empty;
+                    var delaytime = RaidSettingsSV.DelayChannelTime;
                     PK9 pk = new()
                     {
                         Species = (ushort)RaidSettingsSV.RaidSpecies,
@@ -737,7 +738,7 @@ namespace SysBot.Pokemon.Discord
                     {
                         if (embedInfo.Item1 != null)
                         {
-                            await Task.Delay(10_000).ConfigureAwait(false);
+                            await Task.Delay(delaytime).ConfigureAwait(false);
                             MemoryStream? ms = new(embedInfo.Item1);
                             try
                             {
