@@ -41,6 +41,9 @@ namespace SysBot.Pokemon
         [Category(TradeConfig), Description("Spin while waiting for trade partner.")]
         public bool SpinTrade { get; set; } = false;
 
+        [Category(TradeConfig), Description("Send Embeds with requested Pokémon trades.")]
+        public bool UseTradeEmbeds { get; set; } = false;
+
         [Category(TradeConfig), Description("Select default species for \"ItemTrade\", if configured.")]
         public Species ItemTradeSpecies { get; set; } = Species.None;
 
