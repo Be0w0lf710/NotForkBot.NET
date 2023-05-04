@@ -30,7 +30,7 @@ namespace SysBot.Pokemon
             Settings = hub.Config.RaidSV;
         }
 
-        private const string RaidBotVersion = "Version B 0.3.5";
+        private const string RaidBotVersion = "Version B 0.4.21";
         private int RaidsAtStart;
         private int RaidCount;
         private int WinCount;
@@ -264,6 +264,9 @@ namespace SysBot.Pokemon
             await CountRaids(lobbyTrainersFinal, token).ConfigureAwait(false);
 
             await ReOpenGame(Hub.Config, token).ConfigureAwait(false);
+
+            if (Settings.KeepDaySeed)
+                OverrideTodaySeed();
         }
 
         private void ApplyPenalty(List<(ulong, TradeMyStatus)> trainers)
@@ -285,6 +288,14 @@ namespace SysBot.Pokemon
             }
         }
 
+        private async void OverrideTodaySeed()
+        {
+            var todayoverride = BitConverter.GetBytes(TodaySeed);
+            List<long> ptr = new(Offsets.TeraRaidBlockPointer);
+            ptr[2] += 0x8;
+            await SwitchConnection.PointerPoke(todayoverride, ptr, CancellationToken.None).ConfigureAwait(false);
+        }
+
         private async Task CountRaids(List<(ulong, TradeMyStatus)>? trainers, CancellationToken token)
         {
             List<uint> seeds = new();
@@ -300,6 +311,8 @@ namespace SysBot.Pokemon
             if (RaidCount == 0)
             {
                 RaidsAtStart = seeds.Count;
+                if (Settings.KeepDaySeed)
+                    OverrideTodaySeed();
                 return;
             }
 

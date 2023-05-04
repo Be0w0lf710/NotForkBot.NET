@@ -38,6 +38,9 @@ namespace SysBot.Pokemon
         [Category(FeatureToggle), Description("If true, the bot will use a random code for the raid.")]
         public bool CodeTheRaid { get; set; } = true;
 
+        [Category(Hosting), Description("When enabled, the bot will restore current day seed to tomorrow's day seed.")]
+        public bool KeepDaySeed { get; set; } = false;
+
         [Category(Hosting), Description("Catch limit per player before they get added to the ban list automatically. If set to 0 this setting will be ignored.")]
         public int CatchLimit { get; set; } = 0;
 
